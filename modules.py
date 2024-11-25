@@ -1,7 +1,7 @@
 import torch
 from torch import nn
-from dgl import ops
-from dgl.nn.functional import edge_softmax
+#from dgl import ops
+#from dgl.nn.functional import edge_softmax
 
 
 class ResidualModuleWrapper(nn.Module):
@@ -46,6 +46,7 @@ class GCNModule(nn.Module):
                                                      hidden_dim_multiplier=hidden_dim_multiplier,
                                                      dropout=dropout)
 
+
     def forward(self, graph, x):
         degrees = graph.out_degrees().float()
         degree_edge_products = ops.u_mul_v(graph, degrees, degrees)
@@ -56,6 +57,7 @@ class GCNModule(nn.Module):
         x = self.feed_forward_module(graph, x)
 
         return x
+
 
 
 class SAGEModule(nn.Module):
@@ -223,6 +225,7 @@ class TransformerAttentionSepModule(nn.Module):
         attn_probs = edge_softmax(graph, attn_scores)
 
         message = ops.u_mul_e_sum(graph, values, attn_probs)
+
         message = message.reshape(-1, self.dim)
         x = torch.cat([x, message], axis=1)
 

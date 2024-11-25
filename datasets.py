@@ -1,9 +1,10 @@
 import os
 import numpy as np
+import pandas as pd
 import torch
 from torch.nn import functional as F
-import dgl
-from dgl import ops
+#import dgl
+#from dgl import ops
 from sklearn.metrics import roc_auc_score
 
 
@@ -16,10 +17,12 @@ class Dataset:
                              'use_sgc_features, use_identity_features, use_adjacency_features should be used.')
 
         print('Preparing data...')
-        data = np.load(os.path.join('data', f'{name.replace("-", "_")}.npz'))
-        node_features = torch.tensor(data['node_features'])
-        labels = torch.tensor(data['node_labels'])
-        edges = torch.tensor(data['edges'])
+        self.data = np.load(os.path.join('data', f'{name.replace("-", "_")}.npz'))
+        self.node_features = torch.tensor(self.data['node_features'])
+        self.labels = torch.tensor(self.data['node_labels'])
+        self.edges = torch.tensor(self.data['edges'])
+        
+        return
 
         graph = dgl.graph((edges[:, 0], edges[:, 1]), num_nodes=len(node_features), idtype=torch.int)
 
